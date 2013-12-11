@@ -1,0 +1,29 @@
+#!/bin/bash
+
+PACKAGE=redis
+VERSION=2.8.3
+REVISION=agora-`date +%Y%m%d-%H%M`
+TARGET="$PACKAGE-$VERSION"
+DEPLOY_PATH=/home/vagrant/debian-packages/`lsb_release -cs`/$PACKAGE/
+GIT_USER=`git config --global user.name`
+GIT_EMAIL=`git config --global user.email`
+
+cd $TARGET
+make 64bit
+
+rm -rf /tmp/$TARGET
+mkdir -p /tmp/$TARGET/usr/
+mkdir -p /tmp/$TARGET/etc/redis
+make install PREFIX=/tmp/$TARGET/usr
+cp redis.conf /tmp/$TARGET/etc/redis/
+cd ..
+
+rm -f $TARGET.deb
+fpm -s dir -t deb -n $PACKAGE -v $VERSION --iteration $REVISION -C /tmp/$TARGET \
+  -p $TARGET.deb \
+  -d "libc6 (>= 2.14)" \
+  -d "adduser" \
+  --maintainer "$GIT_USER <$GIT_EMAIL>" \
+  --after-install after-install.sh \
+  --after-remove after-remove.sh \
+  usr etc
