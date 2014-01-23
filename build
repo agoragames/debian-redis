@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PACKAGE=redis
-VERSION=2.8.3
+VERSION=2.8.4
 REVISION=agora-`date +%Y%m%d-%H%M`
 TARGET="$PACKAGE-$VERSION"
 DEPLOY_PATH=/home/vagrant/debian-packages/`lsb_release -cs`/$PACKAGE/
@@ -26,4 +26,5 @@ fpm -s dir -t deb -n $PACKAGE -v $VERSION --iteration $REVISION -C /tmp/$TARGET 
   --maintainer "$GIT_USER <$GIT_EMAIL>" \
   --after-install after-install.sh \
   --after-remove after-remove.sh \
+  --deb-upstart redis-server.conf \
   usr etc
