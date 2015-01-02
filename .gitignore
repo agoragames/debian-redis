@@ -9,7 +9,6 @@ redis-cli
 redis-sentinel
 redis-server
 doc-tools
-release
 misc/*
 src/release.h
 appendonly.aof

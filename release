@@ -1,0 +1,10 @@
+#!/bin/bash
+
+source ./build
+test -d $DEPLOY_ROOT || git clone git@github.com:agoragames/debian-packages.git $DEPLOY_ROOT
+mkdir -p $DEPLOY_PATH
+cp $TARGET.deb $DEPLOY_PATH
+cd $DEPLOY_PATH
+git add .
+git commit -m "$PACKAGE $VERSION release $REVISION" -e
+git push
