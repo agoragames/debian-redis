@@ -27,5 +27,4 @@ fpm -s dir -t deb -n $PACKAGE -v $VERSION --iteration $REVISION -C /tmp/$TARGET 
   --maintainer "$GIT_USER <$GIT_EMAIL>" \
   --after-install after-install.sh \
   --after-remove after-remove.sh \
-  --deb-upstart redis-server.conf \
   usr etc
