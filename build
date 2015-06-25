@@ -9,17 +9,31 @@ DEPLOY_PATH=$DEPLOY_ROOT/`lsb_release -cs`/$PACKAGE/
 GIT_USER=`git config --global user.name`
 GIT_EMAIL=`git config --global user.email`
 
-cd $TARGET
-make 64bit
+sudo apt-get install -y autoconf && \
+sudo apt-get install -y curl && \
 
-rm -rf /tmp/$TARGET
-mkdir -p /tmp/$TARGET/usr/
-mkdir -p /tmp/$TARGET/etc/redis
-make install PREFIX=/tmp/$TARGET/usr
-cp redis.conf /tmp/$TARGET/etc/redis/
-cd ..
+pushd $TARGET/deps && \
+./update-jemalloc.sh 3.6.0 && \
 
-rm -f $TARGET.deb
+pushd jemalloc && \
+./autogen.sh && \
+popd && \
+
+make jemalloc && \
+make lua && \
+make hiredis && \
+popd && \
+
+pushd $TARGET && \
+make && \
+
+rm -rf /tmp/$TARGET && \
+mkdir -p /tmp/$TARGET/usr/ && \
+mkdir -p /tmp/$TARGET/etc/redis && \
+make install PREFIX=/tmp/$TARGET/usr && \
+popd && \
+
+rm -f $TARGET.deb && \
 fpm -s dir -t deb -n $PACKAGE -v $VERSION --iteration $REVISION -C /tmp/$TARGET \
   -p $TARGET.deb \
   -d "libc6 (>= 2.14)" \
@@ -27,4 +41,5 @@ fpm -s dir -t deb -n $PACKAGE -v $VERSION --iteration $REVISION -C /tmp/$TARGET 
   --maintainer "$GIT_USER <$GIT_EMAIL>" \
   --after-install after-install.sh \
   --after-remove after-remove.sh \
-  usr etc
+  usr etc  && \
+echo 'DONE!'
