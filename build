@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PACKAGE=redis
-VERSION=3.0.7
+VERSION=6.2.5
 REVISION=agora-`date +%Y%m%d-%H%M`
 TARGET="$PACKAGE-$VERSION"
 DEPLOY_ROOT=/home/vagrant/debian-packages
@@ -12,17 +12,17 @@ GIT_EMAIL=`git config --global user.email`
 sudo apt-get install -y autoconf && \
 sudo apt-get install -y curl && \
 
-pushd $TARGET/deps && \
-./update-jemalloc.sh 3.6.0 && \
+#pushd $TARGET/deps && \
+#./update-jemalloc.sh 3.6.0 && \
 
-pushd jemalloc && \
-./autogen.sh && \
-popd && \
+#pushd jemalloc && \
+#./autogen.sh && \
+#popd && \
 
-make jemalloc && \
-make lua && \
-make hiredis && \
-popd && \
+#make jemalloc && \
+#make lua && \
+#make hiredis && \
+#popd && \
 
 pushd $TARGET && \
 make && \
